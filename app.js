@@ -1,15 +1,111 @@
+// All schedules and outcomes are illustrative mock data.
+const CURRENT_GROUP = 4;
+const groupLabel = group => `Group ${group}`;
+
 const events = [
- {id:'volleyball',sport:"Women's Volleyball",opponent:'UCLA',day:'11',when:'Friday · 6:30 PM',venue:'Smith Fieldhouse',hours:'~2 hours',impact:'High',points:30,rank:1520,group:3,attendance:'~1,200'},
- {id:'soccer',sport:"Women's Soccer",opponent:'Baylor',day:'17',when:'Thursday · 7:00 PM',venue:'South Field',hours:'~2 hours',impact:'Moderate',points:20,rank:1635,group:4,attendance:'~1,500'},
- {id:'swimming',sport:'Swimming & Diving',opponent:'Utah',day:'19',when:'Saturday · 11:00 AM',venue:'Richards Building Pool',hours:'~1.5 hours',impact:'Moderate',points:15,rank:1690,group:4,attendance:'~350'}
+  { id: 'volleyball', sport: "Women's Volleyball", opponent: 'UCLA', date: 'Sep 11', when: 'Friday · 6:30 PM', hours: '~2 hours', points: 30, rank: 1520, group: 3 },
+  { id: 'soccer', sport: "Women's Soccer", opponent: 'Baylor', date: 'Sep 17', when: 'Thursday · 7:00 PM', hours: '~2 hours', points: 20, rank: 1635, group: 4 },
+  { id: 'swimming', sport: 'Swimming & Diving', opponent: 'Utah', date: 'Sep 19', when: 'Saturday · 11:00 AM', hours: '~1.5 hours', points: 15, rank: 1690, group: 4 }
 ];
-const arrow='<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12h15M13 5l7 7-7 7"/></svg>';
-const clock='<svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
-const fmt=n=>n.toLocaleString('en-US');
-const steps=n=>`<nav class="steps" aria-label="Your decision in three steps">${['My standing','Ways to improve','Projected impact'].map((s,i)=>`${i?'<span class="step-line"></span>':''}<span class="step ${i+1===n?'active':i+1<n?'done':''}" ${i+1===n?'aria-current="step"':''}><b>${i+1<n?'✓':i+1}</b>${s}</span>`).join('')}</nav>`;
-const back=(url,text)=>`<a class="back" href="${url}"><span aria-hidden="true">←</span> ${text}</a>`;
-function standing(){return `${steps(1)}<p class="eyebrow">My ROC Standing</p><h1 tabindex="-1">Know where you stand.</h1><p class="intro">See whether another ROC event is worth your time.</p><div class="standing-grid"><section class="card rank-card" aria-label="Current priority"><div class="card-top"><span class="label">Your current rank</span><span class="tag">Mock data</span></div><div class="number">#1,842</div><p class="rank-context">of ~6,000 ROC pass holders · Top 31%</p><div class="rank-track" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div><div class="track-labels"><span>Earlier priority</span><span>Later priority</span></div><div class="points"><span class="label">Priority points</span><strong>120 <small>pts</small></strong></div></section><section class="card target-card"><div class="target-top">The game you're aiming for</div><h2 class="matchup">BYU vs. Utah</h2><div class="game-info">Football · High-demand game</div><div class="entry-box"><span class="label">Projected entry</span><strong class="group-value">Group 4</strong></div><p class="target-copy">Three groups could enter ahead of you.<br>Another event could help you move up.</p></section></div><div class="next-row"><p class="next-copy">A little time in the stands could make a difference at your next big game.</p><a class="primary" href="#opportunities">See Ways to Improve ${arrow}</a></div><p class="note">Prototype estimate. Entry groups are illustrative, not official BYU calculations.</p>`;}
-function opportunities(){return `${steps(2)}${back('#standing','My standing')}<p class="eyebrow">Ways to Improve</p><h1 tabindex="-1">Make your next event count.</h1><p class="intro">Find an Olympic sporting event that fits your schedule.</p><div class="events">${events.map(e=>`<article class="card event"><div class="event-head"><div class="date"><span>SEP</span><strong>${e.day}</strong></div><span class="impact ${e.impact==='Moderate'?'moderate':''}">${e.impact} potential impact</span></div><div class="sport">${e.sport}</div><h2>BYU vs. ${e.opponent}</h2><div class="event-time">${e.when}</div><div class="venue">${e.venue}</div><div class="duration">${clock}<strong>${e.hours}</strong> <small>at the event</small></div><a class="primary" href="#impact/${e.id}" aria-label="See projected impact for ${e.sport} vs. ${e.opponent}">See Projected Impact ${arrow}</a></article>`).join('')}</div><p class="note">Sample September 2026 schedule. Time estimates exclude travel.<br>Potential impact reflects mock point awards and standing; actual results may vary.</p>`;}
-function impact(e){const gain=1842-e.rank,earlier=e.group<4;return `${steps(3)}${back('#opportunities','Ways to improve')}<p class="eyebrow">Projected Impact</p><h1 tabindex="-1">Is this game worth your time?</h1><p class="intro">Here’s what attending could mean for your ROC priority.</p><div class="selection"><div><strong>${e.sport} vs. ${e.opponent}</strong><p>Sep ${e.day} · ${e.when}</p></div><span class="time-pill">${e.hours}</span></div><div class="comparison"><section class="card compare-card"><div class="compare-label">Current standing</div><div class="number">#1,842</div><div class="group-value">Group 4</div><div class="compare-points">120 priority points</div></section><div class="compare-arrow">${arrow}</div><section class="card compare-card after"><div class="compare-label">If you attend · Estimate</div><div class="number">~#${fmt(e.rank)}</div><div class="group-value">Group ${e.group}</div><div class="compare-points">${120+e.points} priority points <strong>+${e.points} pts</strong></div></section></div><section class="result"><div class="change">↑ ${gain}<span>estimated places</span></div><div><h2>${earlier?'Potentially earlier entry':'Better rank. Same entry group.'}</h2><p>${earlier?'Group 4 → Group 3 for BYU vs. Utah. Your '+e.hours+' could move you one entry group earlier.':'For BYU vs. Utah, '+e.hours+' could improve your rank, but may not get you earlier entry.'}</p></div></section><p class="note"><strong>Prototype estimates only.</strong> This scenario assumes +${e.points} points for attendance and ${e.attendance} event attendees. All rankings and entry groups are mock outcomes, not official BYU calculations or guaranteed access.</p><div class="compare-actions"><a class="primary" href="#opportunities">Compare Another Event ${arrow}</a></div>`;}
-function render(){const hash=location.hash||'#standing';const selected=events.find(e=>hash===`#impact/${e.id}`);const view=selected?impact(selected):hash==='#opportunities'?opportunities():standing();document.getElementById('app').innerHTML=`<div class="screen">${view}</div>`;document.title=`${selected?'Projected Impact':hash==='#opportunities'?'Ways to Improve':'My ROC Standing'} · ROC Priority`;window.scrollTo(0,0);if(location.hash)document.querySelector('h1').focus({preventScroll:true});}
-window.addEventListener('hashchange',render);render();
+
+const fmt = number => number.toLocaleString('en-US');
+const home = screen => `
+  <nav class="page-nav" aria-label="Main navigation">
+    <a href="#standing" ${screen === 'Standing' ? 'aria-current="page"' : ''}>${screen === 'Standing' ? '' : '← '}My ROC Standing</a>
+    <span>${screen}</span>
+  </nav>`;
+
+function standing() {
+  return `${home('Standing')}
+    <h1 tabindex="-1">Know your priority.<br>Decide what’s worth your time.</h1>
+    <p class="intro">See whether another event could get you earlier entry.</p>
+    <section class="card standing-card" aria-label="Your priority for BYU vs. Notre Dame">
+      <div class="rank-section">
+        <span class="label">Your current rank</span>
+        <div class="number">#1,842</div>
+        <p class="secondary">of ~6,000 ROC pass holders</p>
+        <div class="points"><span class="label">Priority points</span><strong>120 <small>pts</small></strong></div>
+      </div>
+      <div class="target-section">
+        <div><span class="label">Target football game</span><h2>BYU vs. Notre Dame</h2></div>
+        <div class="entry"><span class="label">Projected entry</span><strong>${groupLabel(CURRENT_GROUP)}</strong></div>
+      </div>
+      <p class="explanation">Three groups could enter ahead of you.</p>
+    </section>
+    <a class="primary" href="#opportunities">See Ways to Improve <span aria-hidden="true">→</span></a>`;
+}
+
+function opportunities() {
+  return `${home('Compare Events')}
+    <h1 tabindex="-1">Ways to improve</h1>
+    <p class="intro">Compare the time you’d spend with the potential benefit.</p>
+    <div class="events">
+      ${events.map(event => `
+        <article class="card event">
+          <div class="event-heading">
+            <div class="event-date" aria-label="${event.date}">
+              <span>${event.date.split(' ')[0]}</span>
+              <strong>${event.date.split(' ')[1]}</strong>
+            </div>
+            <div>
+              <h2>${event.sport}<br>vs. ${event.opponent}</h2>
+              <p class="secondary">${event.when}</p>
+            </div>
+          </div>
+          <div class="event-tradeoff">
+            <strong>${event.hours}</strong>
+            <span class="potential">+${event.points} estimated pts</span>
+          </div>
+          <a class="primary" href="#impact/${event.id}" aria-label="See projected impact for ${event.sport} vs. ${event.opponent}">See Projected Impact <span aria-hidden="true">→</span></a>
+        </article>`).join('')}
+    </div>
+    <p class="note">Sample September 2026 events. Time estimates exclude travel.</p>`;
+}
+
+function impact(event) {
+  const earlier = event.group < CURRENT_GROUP;
+  const gain = 1842 - event.rank;
+  return `${home('Projected Impact')}
+    <h1 tabindex="-1">Is this game worth your time?</h1>
+    <p class="intro">Here’s what attending could mean for your ROC priority.</p>
+    <div class="selection">
+      <div><strong>${event.sport} vs. ${event.opponent}</strong><p>${event.date} · ${event.when}</p></div>
+      <span class="time-pill">${event.hours}</span>
+    </div>
+    <div class="comparison">
+      <section class="card compare-card" aria-label="Current standing">
+        <div class="compare-label">Current standing</div>
+        <div class="number">#1,842</div>
+        <div class="group-value">${groupLabel(CURRENT_GROUP)}</div>
+        <div class="compare-points">120 priority points</div>
+      </section>
+      <div class="compare-arrow" aria-hidden="true">→</div>
+      <section class="card compare-card after" aria-label="Estimated standing if you attend">
+        <div class="compare-label">If you attend · Estimate</div>
+        <div class="number">~#${fmt(event.rank)}</div>
+        <div class="group-value">${groupLabel(event.group)}</div>
+        <div class="compare-points">${120 + event.points} priority points <strong>+${event.points} pts</strong></div>
+      </section>
+    </div>
+    <section class="result">
+      <div class="change">↑ ${gain}<span>estimated places</span></div>
+      <div>
+        <h2>${earlier ? 'Potentially earlier entry' : 'Better rank. Same entry group.'}</h2>
+        <p>${earlier ? `Group ${CURRENT_GROUP} → Group ${event.group} for BYU vs. Notre Dame. Your ${event.hours} could move you one entry group earlier.` : `For BYU vs. Notre Dame, ${event.hours} could improve your rank, but may not get you earlier entry.`}</p>
+      </div>
+    </section>
+    <a class="primary" href="#opportunities">Compare Another Event <span aria-hidden="true">→</span></a>`;
+}
+
+function render() {
+  const hash = location.hash || '#standing';
+  const selected = events.find(event => hash === `#impact/${event.id}`);
+  const view = selected ? impact(selected) : hash === '#opportunities' ? opportunities() : standing();
+  document.getElementById('app').innerHTML = view;
+  document.title = `${selected ? 'Projected Impact' : hash === '#opportunities' ? 'Ways to Improve' : 'My ROC Standing'} · ROC Priority`;
+  window.scrollTo(0, 0);
+  if (location.hash) document.querySelector('h1').focus({ preventScroll: true });
+}
+
+window.addEventListener('hashchange', render);
+render();
